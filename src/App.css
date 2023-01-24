@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {background-color: aliceblue;}
+.container {margin: auto; max-width: 600px;}
+.todo-group {margin-top: 50px;padding: 30px;border-radius: 10px;box-shadow: -9px 17px 13px rgb(0 0 0 / 16%);background-color: #fff;}
+.todo-add-area fieldset {display: flex;margin: 0;padding: 0;border:0;}
+.todo-add-area legend {position: absolute;width:1px;height:1px;padding:0;border:0;overflow:hidden;clip: rect(1px, 1px, 1px, 1px);clip-path: inset(50%);}
+.todo-add-area .todo-input {flex: 10;padding:5px;}
+.todo-add-area .todo-add-btn {flex: 1;}
+.todo-item-list {padding: 0;list-style: none;}
+.todo-item-list .todo-item {display: flex;align-items: center;padding: 10px;border-bottom: 1px dotted #ccc;}
+.todo-item-list .todo-item label {padding-left: 10px;}
+.todo-item-list .todo-item button {margin-left: auto;padding: 5px 9px;border: none;border-radius: 50%;color: rgb(81, 81, 81);cursor: pointer;}
