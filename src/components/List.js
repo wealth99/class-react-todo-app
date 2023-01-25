@@ -1,17 +1,10 @@
-import React from 'react';
+import React, { useState } from "react";
 
-export default function List({ todoData, setTodoData }) {
+const List = React.memo(({id, title, completed, todoData, setTodoData, provided, snapshot, handleClick}) => {
+    console.log("List Component");
 
-    const getStyle = (completed) => {
-        return {
-            textDecoration: completed ? "line-through" : "none"
-        }
-    }
-
-    const handleClick = (id) => {
-        let newTodoData = todoData.filter(data => data.id !== id);
-        setTodoData(newTodoData);
-    }
+    const [isEditing, setIsEditing] = useState(false);
+    const [editTitle, setEditTitle] = useState(title);
 
     const handleCompleteChange = (id) => {
         let newTodoData = todoData.map(data => {
@@ -22,17 +15,62 @@ export default function List({ todoData, setTodoData }) {
         });
 
         setTodoData(newTodoData);
+        localStorage.setItem("todoData", JSON.stringify(newTodoData));
     }
 
-    return (
-        <ul className="todo-item-list">
-        {todoData.map(data => (
-            <li className="todo-item" key={data.id}>
-                <input type="checkbox" name="todo-check" id={'todo-check-' + data.id} defaultChecked={data.completed} onChange={() => handleCompleteChange(data.id)} />
-                <label htmlFor={'todo-check-' + data.id} style={getStyle(data.completed)}>{data.title}</label>
-                <button onClick={() => handleClick(data.id)}>X</button>
+    const handleEditChange = (e) => {
+        setEditTitle(e.target.value);
+    }
+
+    const handleEditSubmit = (e) => {
+        let newTodoData = todoData.map(data => {
+            if(data.id === id) {
+                data.title = editTitle;
+            }
+            return data;
+        });
+
+        setTodoData(newTodoData);
+        localStorage.setItem("todoData", JSON.stringify(newTodoData));
+        setIsEditing(false);
+    }
+
+    if(isEditing) {
+        return (
+            <li className="flex items-center w-full my-2 px-4 py-1 border rounded text-gray-600 bg-gray-100">
+                <input 
+                    value={editTitle}
+                    onChange={handleEditChange}
+                    className="w-full mr-4 px-3 py-2 rounded text-gray-500"
+                />
+                <button className="pr-4" onClick={handleEditSubmit}>save</button>
+                {/* <button onClick={() => handleClick(id)}>X</button> */}
             </li>
-        ))}
-        </ul>
-    )
-}
+        )
+    } else {
+        return (
+            <li 
+                key={id}
+                {...provided.draggableProps}
+                ref={provided.innerRef}
+                {...provided.dragHandleProps} 
+                className={`${snapshot.isDragging ? "bg-gray-400" : "bg-gray-100"} flex items-center w-full my-2 px-4 py-1 border rounded text-gray-600`}
+            >
+                <input 
+                    type="checkbox"
+                    name="todo-check"
+                    id={'todo-check-' + id}
+                    defaultChecked={completed}
+                    onChange={() => handleCompleteChange(id)}
+                />
+                <label htmlFor={'todo-check-' + id} className={`${completed ? "line-through" : ""} mr-auto pl-2.5`}>
+                    {title}
+                </label>
+                <button className="pr-4" onClick={() => setIsEditing(true)}>edit</button>
+                <button onClick={() => handleClick(id)}>X</button>
+            </li>
+        )
+    }
+});
+
+export default List;
